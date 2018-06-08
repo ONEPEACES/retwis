@@ -41,6 +41,12 @@
         </property>
     </bean>
 
+
+    <!--the filter class-->
+    <mvc:interceptors>
+        <bean class="com.example.common.filter.MyInterceptor"/>
+    </mvc:interceptors>
+
     <!--velocity结果映射到.vm后缀的页面-->
     <bean class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
         <property name="suffix" value=".vm"/>

@@ -10,9 +10,9 @@
     <div id="header">
         <a href="/"><img style="border:none" src="/logo.png" width="192" height="85" alt="Retwis"></a>
         <div id="navbar">
-            <a href="/user/redirectToIndex">主页</a>
-            | <a href="timeline.php">热点</a>
             #if(${user})
+            <a href="/user/toHomePage">主页</a>
+            | <a href="timeline.php">热点</a>
                 | <a href="/user/logout">退出</a>
             #end
         </div>
@@ -35,10 +35,16 @@
             0 关注<br>
         </div>
     </div>
-    <div class="post">
-        <a class="username" href="profile.php?u=test">test</a> hello<br>
-        <i>11 分钟前 通过 web发布</i>
-    </div>
+
+        #if(${statuses})
+            #foreach($status in ${statuses})
+            <div class="post">
+                <a class="username" href="profile.php?u=test">test</a> ${status.content}<br>
+                <i>${status.time} 通过 web发布</i>
+            </div>
+            #end
+        #end
+
 
     <div id="footer">redis版本的仿微博项目 <a href="http://redis.io">Redis key-value database</a></div>
 </div>

@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import redis.clients.jedis.ShardedJedis;
 
+import java.util.List;
+
 @Slf4j
 @Repository(value = "redisCache")
 public class RedisCache {
@@ -14,7 +16,8 @@ public class RedisCache {
 
 
     /**
-     * 集群模式下自动选择0号数据库
+     * auto-select 0 database in cluster
+     *
      * @param key
      * @param val
      * @return
@@ -22,7 +25,7 @@ public class RedisCache {
     public String set(String key, String val) {
         String result = null;
         try (ShardedJedis shardedJedis = redisDataSource.getShardedJedis()) {
-            if(shardedJedis == null){
+            if (shardedJedis == null) {
                 return null;
             }
             result = shardedJedis.set(key, val);
@@ -35,7 +38,7 @@ public class RedisCache {
     public String get(String key) {
         String result = null;
         try (ShardedJedis shardedJedis = redisDataSource.getShardedJedis()) {
-            if(shardedJedis == null){
+            if (shardedJedis == null) {
                 return null;
             }
             result = shardedJedis.get(key);
@@ -45,19 +48,57 @@ public class RedisCache {
         return result;
     }
 
-    public Long setnx(String key,String val) {
+    public Long setnx(String key, String val) {
         Long result = null;
         try (ShardedJedis shardedJedis = redisDataSource.getShardedJedis()) {
-            if(shardedJedis == null){
+            if (shardedJedis == null) {
                 return null;
             }
-            result = shardedJedis.setnx(key,val);
+            result = shardedJedis.setnx(key, val);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
         return result;
     }
 
+    public Long incr(String key) {
+        Long result = null;
+        try (ShardedJedis shardedJedis = redisDataSource.getShardedJedis()) {
+            if (shardedJedis == null) {
+                return null;
+            }
+            result = shardedJedis.incr(key);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    public Long rpush(String key, String val) {
+        Long result = null;
+        try (ShardedJedis shardedJedis = redisDataSource.getShardedJedis()) {
+            if (shardedJedis == null) {
+                return null;
+            }
+            result = shardedJedis.rpush(key, val);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    public List<String> lrange(String key, long start, long end) {
+        List<String> result = null;
+        try (ShardedJedis shardedJedis = redisDataSource.getShardedJedis()) {
+            if (shardedJedis == null) {
+                return null;
+            }
+            result = shardedJedis.lrange(key, start, end);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return result;
+    }
 
 
 }

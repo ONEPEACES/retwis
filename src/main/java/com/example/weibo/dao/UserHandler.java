@@ -15,7 +15,7 @@ public class UserHandler {
     private RedisCache redisCache;
 
     /**
-     * 全局自增
+     * global incr-num
      */
     private volatile AtomicInteger globalIncrVal = new AtomicInteger(0);
 
@@ -47,7 +47,7 @@ public class UserHandler {
                 break;
             }
         }
-        //因为登录需要根据用户名登录
+        //according to the username when login
         redisCache.setnx("user:username:" + username + ":userid", "" + globalIncrVal.get());
         return "regist_succ";
     }

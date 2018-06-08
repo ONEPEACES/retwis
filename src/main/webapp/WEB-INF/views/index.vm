@@ -10,9 +10,9 @@
     <div id="header">
         <a href="/"><img style="border:none" src="/logo.png" width="192" height="85" alt="Retwis"></a>
         <div id="navbar">
+            #if(${user})
             <a href="/user/redirectToIndex">主页</a>
             | <a href="timeline.php">热点</a>
-            #if(${user})
                 | <a href="/user/logout">退出</a>
             #end
         </div>
