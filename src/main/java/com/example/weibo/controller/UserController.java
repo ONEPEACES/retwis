@@ -41,14 +41,18 @@ public class UserController {
         // homepage has user's List<status>
         // show personal status list
         User user = (User) session.getAttribute("user");
-        List<Status> statuses = weiboService.getUserWeibo(user.getUsername());
-        model.addAttribute("statuses", statuses);
+
         //关注的用户的粉丝及其关注的人
         Map<String, Set<?>> concerInfo = getConcerInfo(user.getUsername());
         Set<User> fans = (Set<User>) concerInfo.get("fans");
         Set<User> concerns = (Set<User>) concerInfo.get("concerns");
         model.addAttribute("fansNum", fans.size());
         model.addAttribute("concernsNum", concerns.size());
+
+        //添加当前用户到concerns以便展示当前用户发表微博
+        concerns.add(user);
+        List<Status> statuses = weiboService.getUserWeiboWithconcerns(concerns);
+        model.addAttribute("statuses", statuses);
         return "home";
     }
 
@@ -100,14 +104,18 @@ public class UserController {
         }
         //contain user-status
         session.setAttribute("user", resp.getData());
-        List<Status> statuses = weiboService.getUserWeibo(resp.getData().getUsername());
-        model.addAttribute("statuses", statuses);
         //关注的用户的粉丝及其关注的人
         Map<String, Set<?>> concerInfo = getConcerInfo(username);
         Set<User> fans = (Set<User>) concerInfo.get("fans");
         Set<User> concerns = (Set<User>) concerInfo.get("concerns");
         model.addAttribute("fansNum", fans.size());
         model.addAttribute("concernsNum", concerns.size());
+
+        //查找关注用户微博
+        User user = (User) session.getAttribute("user");
+        concerns.add(user);
+        List<Status> statuses = weiboService.getUserWeiboWithconcerns(concerns);
+        model.addAttribute("statuses", statuses);
         return "home";
     }
 

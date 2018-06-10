@@ -3,7 +3,7 @@ package com.example.weibo.vo;
 import lombok.Data;
 
 @Data
-public class Status {
+public class Status implements Comparable<Status> {
 
 
     public Status(String content, String time, String username) {
@@ -22,4 +22,11 @@ public class Status {
      * the status publisher
      */
     private String username;
+
+
+
+    @Override
+    public int compareTo(Status o) {
+        return (int) (Long.valueOf(o.getTime())- Long.valueOf(this.getTime()));
+    }
 }

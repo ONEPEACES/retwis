@@ -2,6 +2,7 @@ package com.example.weibo.dao;
 
 import com.example.common.cache.RedisCache;
 import com.example.weibo.vo.Status;
+import com.example.weibo.vo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -9,6 +10,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Repository("weiboHandler")
@@ -42,6 +45,7 @@ public class WeiboHandler {
 
     /**
      * get statuses shown in pages
+     *
      * @param username
      * @return
      */
@@ -50,8 +54,31 @@ public class WeiboHandler {
         List<String> postids = redisCache.lrange("statuses:userid:" + userid + ":postids", 0, -1);
         List<Status> statuses = new ArrayList<>();
         postids.forEach(postid -> statuses.add(new Status(redisCache.get("post:postid:" + postid + ":content"),
-                redisCache.get("post:postid:" + postid + ":time"),username)));
+                redisCache.get("post:postid:" + postid + ":time"), username)));
         statuses.forEach(status -> status.setTime(new SimpleDateFormat().format(new Date(Long.valueOf(status.getTime())))));
         return statuses;
+    }
+
+    /**
+     * 获取关注用户发表的微博
+     * @param concerns
+     * @return
+     */
+    public List<Status> getUserWeiboWithconcerns(Set<User> concerns) {
+        List<Status> resp = new ArrayList<>();
+        List<List<Status>> res = new ArrayList<>();
+        for (User concernUser : concerns) {
+            List<Status> statuses = new ArrayList<>();
+            String userid = redisCache.get("user:username:" + concernUser.getUsername() + ":userid");
+            List<String> postids = redisCache.lrange("statuses:userid:" + userid + ":postids", 0, -1);
+            postids.forEach(postid -> statuses.add(new Status(redisCache.get("post:postid:" + postid + ":content"),
+                    redisCache.get("post:postid:" + postid + ":time"), concernUser.getUsername())));
+            res.add(statuses);
+        }
+        res.forEach(resp::addAll);
+        //实现了comparable调用无参排序
+        List<Status> collect = resp.stream().sorted().collect(Collectors.toList());
+        collect.forEach(status -> status.setTime(new SimpleDateFormat().format(new Date(Long.valueOf(status.getTime())))));
+        return collect;
     }
 }

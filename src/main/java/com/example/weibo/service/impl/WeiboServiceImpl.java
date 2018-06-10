@@ -5,10 +5,12 @@ import com.example.common.resp.RestResponse;
 import com.example.weibo.dao.WeiboHandler;
 import com.example.weibo.service.WeiboService;
 import com.example.weibo.vo.Status;
+import com.example.weibo.vo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service(value = "weiboServiceImpl")
 public class WeiboServiceImpl implements WeiboService {
@@ -29,6 +31,11 @@ public class WeiboServiceImpl implements WeiboService {
     public List<Status> getUserWeibo(String username) {
         List<Status> statuses = weiboHandler.getStatuses(username);
         return statuses;
+    }
+
+    @Override
+    public List<Status> getUserWeiboWithconcerns(Set<User> concerns) {
+        return weiboHandler.getUserWeiboWithconcerns(concerns);
     }
 
 
