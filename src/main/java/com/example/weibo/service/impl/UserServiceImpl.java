@@ -55,4 +55,9 @@ public class UserServiceImpl implements UserService {
     public String hadConcern(String currentUsername, String concerningUsername) {
         return userHandler.hadConcern(currentUsername, concerningUsername);
     }
+
+    @Override
+    public void unConcernOne(String concerningUsername, String username) {
+        userHandler.unConcernOne(concerningUsername,username);
+    }
 }

@@ -117,6 +117,7 @@ public class UserHandler {
 
     /**
      * 关注某个用户
+     *
      * @param concerningUsername
      * @param currentUsername
      * @return
@@ -126,21 +127,40 @@ public class UserHandler {
         String userId = redisCache.get("user:username:" + currentUsername + ":userid");
         Long concernsSucc = redisCache.sadd("concerns:userid:" + userId + ":ids", concerningUserId);
         Long fansSucc = redisCache.sadd("fans:userid:" + concerningUserId + ":fansids", userId);
-        if(concernsSucc == 1 && fansSucc == 1){
+        if (concernsSucc == 1 && fansSucc == 1) {
             return RestResponse.createBySuccMessage("concern_succ");
         }
         return RestResponse.createByErrorMessage("concern_fail");
     }
 
 
+    /**
+     * 是否已关注某用户
+     *
+     * @param currentUsername    当前登录用户
+     * @param concerningUsername 要关注的用户
+     * @return
+     */
     public String hadConcern(String currentUsername, String concerningUsername) {
         String concerningUserId = redisCache.get("user:username:" + concerningUsername + ":userid");
         String userId = redisCache.get("user:username:" + currentUsername + ":userid");
         Set<String> smembers = redisCache.smembers("fans:userid:" + concerningUserId + ":fansids");
-        if(smembers.contains(userId)){
+        if (smembers.contains(userId)) {
             return "had_concern";
-        }else {
+        } else {
             return "no_concern";
         }
+    }
+
+    /**
+     * 取消关注
+     * @param concerningUsername
+     * @param currentUsername
+     */
+    public void unConcernOne(String concerningUsername, String currentUsername) {
+        String concerningUserId = redisCache.get("user:username:" + concerningUsername + ":userid");
+        String userId = redisCache.get("user:username:" + currentUsername + ":userid");
+        Long concernsSucc = redisCache.srem("concerns:userid:" + userId + ":ids", concerningUserId);
+        Long fansSucc = redisCache.srem("fans:userid:" + concerningUserId + ":fansids", userId);
     }
 }

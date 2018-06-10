@@ -22,4 +22,6 @@ public interface UserService {
     Set<User> fans(String username);
 
     String hadConcern(String currentUsername, String concerningUsername);
+
+    void unConcernOne(String concerningUsername, String username);
 }

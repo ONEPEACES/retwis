@@ -147,6 +147,19 @@ public class RedisCache {
         return result;
     }
 
+    public Long srem(String key, String... value) {
+        Long result = null;
+        try (ShardedJedis shardedJedis = redisDataSource.getShardedJedis()) {
+            if (shardedJedis == null) {
+                return null;
+            }
+            result = shardedJedis.srem(key,value);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
     public Set<String> smembers(String key) {
         Set<String> result = null;
         try (ShardedJedis shardedJedis = redisDataSource.getShardedJedis()) {

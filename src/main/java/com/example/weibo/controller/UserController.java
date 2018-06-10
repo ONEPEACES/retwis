@@ -66,12 +66,14 @@ public class UserController {
         User user = (User) session.getAttribute("user");
         //排除其本身关注
         if (username.equals(user.getUsername())) {
-            model.addAttribute("concerned","1");
+            model.addAttribute("concerned", "0");
         }
         //排除已关注再进行关注
-        String isConcerned = userService.hadConcern(user.getUsername(),username);
-        if("had_concern".equals(isConcerned)){
-            model.addAttribute("concerned","1");
+        String isConcerned = userService.hadConcern(user.getUsername(), username);
+        //concerned 0 -> 用户自己
+        //concerned 1 -> 其他用户
+        if ("had_concern".equals(isConcerned)) {
+            model.addAttribute("concerned", "1");
         }
         model.addAttribute("profileUsername", username);
         Map<String, Set<?>> concerInfo = getConcerInfo(username);
@@ -95,7 +97,7 @@ public class UserController {
 
 
     @RequestMapping(value = "/login")
-    public String login(HttpServletRequest request, HttpSession session, Model model) {
+    public String login(HttpServletRequest request, HttpSession session) {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         RestResponse<User> resp = userService.login(username, password);
@@ -104,19 +106,7 @@ public class UserController {
         }
         //contain user-status
         session.setAttribute("user", resp.getData());
-        //关注的用户的粉丝及其关注的人
-        Map<String, Set<?>> concerInfo = getConcerInfo(username);
-        Set<User> fans = (Set<User>) concerInfo.get("fans");
-        Set<User> concerns = (Set<User>) concerInfo.get("concerns");
-        model.addAttribute("fansNum", fans.size());
-        model.addAttribute("concernsNum", concerns.size());
-
-        //查找关注用户微博
-        User user = (User) session.getAttribute("user");
-        concerns.add(user);
-        List<Status> statuses = weiboService.getUserWeiboWithconcerns(concerns);
-        model.addAttribute("statuses", statuses);
-        return "home";
+        return "redirect:/user/toHomePage";
     }
 
 
@@ -142,23 +132,20 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/concer")
-    public String concern(HttpSession session, @RequestParam(value = "username") String concerningUsername, Model model) {
+    public String concern(HttpSession session, @RequestParam(value = "username") String concerningUsername) {
         User user = (User) session.getAttribute("user");
         RestResponse res = userService.concernOne(concerningUsername, user.getUsername());
         //用户自己关注自己
-        if (user.getUsername().equals(concerningUsername)) {
-            model.addAttribute("concerned", "1");
-            return "profile";
-        }
-        //关注的用户的粉丝及其关注的人
-        Map<String, Set<?>> concerInfo = getConcerInfo(concerningUsername);
-        Set<User> fans = (Set<User>) concerInfo.get("fans");
-        Set<User> concerns = (Set<User>) concerInfo.get("concerns");
-        model.addAttribute("profileUsername", concerningUsername);
-        model.addAttribute("fansNum", fans.size());
-        model.addAttribute("concernsNum", concerns.size());
-        model.addAttribute("concerned", "1");
-        return "profile";
+        //concerned 0 -> 用户自己
+        //concerned 1 -> 其他用户
+        return "redirect:/user/toProfilePage?username=" + concerningUsername;
+    }
+
+    @RequestMapping(value = "/unconcern")
+    public String unconcern(HttpSession session, @RequestParam(value = "username") String concerningUsername) {
+        User user = (User) session.getAttribute("user");
+        userService.unConcernOne(concerningUsername, user.getUsername());
+        return "redirect:/user/toProfilePage?username=" + concerningUsername;
     }
 
 

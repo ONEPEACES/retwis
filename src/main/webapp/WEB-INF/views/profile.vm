@@ -23,6 +23,8 @@
         <h2 class="username">${profileUsername}</h2>
         #if(!${concerned})
             <a href="/user/concer?username=${profileUsername}" class="button">关注ta</a>
+        #elseif(${concerned} == "1")
+            <a href="/user/unconcern?username=${profileUsername}" class="button">取消关注</a>
         #end
         <div id="homeinfobox">
             #if(${fansNum})

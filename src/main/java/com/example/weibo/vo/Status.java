@@ -24,7 +24,12 @@ public class Status implements Comparable<Status> {
     private String username;
 
 
-
+    /**
+     * o1 - o2 是升序(自然排序)
+     * o2 - o1 是降序
+     * @param o
+     * @return
+     */
     @Override
     public int compareTo(Status o) {
         return (int) (Long.valueOf(o.getTime())- Long.valueOf(this.getTime()));
