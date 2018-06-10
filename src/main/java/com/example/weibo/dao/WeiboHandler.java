@@ -61,6 +61,8 @@ public class WeiboHandler {
 
     /**
      * 获取关注用户发表的微博
+     * 拉取关注用户发布微博的前5条
+     *
      * @param concerns
      * @return
      */
@@ -71,7 +73,7 @@ public class WeiboHandler {
             List<Status> statuses = new ArrayList<>();
             String userid = redisCache.get("user:username:" + concernUser.getUsername() + ":userid");
             List<String> postids = redisCache.lrange("statuses:userid:" + userid + ":postids", 0, -1);
-            postids.forEach(postid -> statuses.add(new Status(redisCache.get("post:postid:" + postid + ":content"),
+            postids.stream().limit(5).forEach(postid -> statuses.add(new Status(redisCache.get("post:postid:" + postid + ":content"),
                     redisCache.get("post:postid:" + postid + ":time"), concernUser.getUsername())));
             res.add(statuses);
         }

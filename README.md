@@ -38,14 +38,16 @@ get the postid through userid which we have stored in statuses such as:
 - sadd fans:userid:1:fansids 2
 - lpush concers:userids 1 
 
----
+![login_page](/git_pictures/login.png)
 
-## global key
+![home_page](/git_pictures/home.png)
 
-| table-name | postid |
-| - | :-: | -: |
-| 列名 | 操作| 备注 |
-| postid | incr | 产生的全局postid | 
+![timeline_page](/git_pictures/timeline.png)
+
+![profile1_page](/git_pictures/profile1.png)
+
+![profile_page](/git_pictures/profile.png)
+
 
 
 
