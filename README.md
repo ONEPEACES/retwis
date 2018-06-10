@@ -1,7 +1,8 @@
 # retwis
 A website to simulate weibo which use redis as data storge
 
----
+
+## key-value设计
 the key-value database desigin:
 
 **user-table:**
@@ -38,15 +39,18 @@ get the postid through userid which we have stored in statuses such as:
 - sadd fans:userid:1:fansids 2
 - lpush concers:userids 1 
 
-![login_page](/git_pictures/login.png)
 
-![home_page](/git_pictures/home.png)
+## 展示页面
 
-![timeline_page](/git_pictures/timeline.png)
+![登录页面](/git_pictures/login.png)
 
-![profile1_page](/git_pictures/profile1.png)
+![微博发表](/git_pictures/home.png)
 
-![profile_page](/git_pictures/profile.png)
+![热点话题](/git_pictures/timeline.png)
+
+![个人主页](/git_pictures/profile1.png)
+
+![个人主页](/git_pictures/profile.png)
 
 
 
