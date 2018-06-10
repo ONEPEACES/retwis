@@ -38,6 +38,15 @@ get the postid through userid which we have stored in statuses such as:
 - sadd fans:userid:1:fansids 2
 - lpush concers:userids 1 
 
+---
+
+## global key
+
+| table-name | postid |
+| - | :-: | -: |
+| 列名 | 操作| 备注 |
+| postid | incr | 产生的全局postid | 
+
 
 
 
