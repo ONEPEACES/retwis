@@ -8,30 +8,43 @@
 <body>
 <div id="page">
     <div id="header">
-        <a href="/"><img style="border:none" src="/logo.png" width="192" height="85" alt="Retwis"></a>
+        <a href="/user/redirectToIndex"><img style="border:none" src="/static/logo.png" width="192" height="85"
+                                             alt="Retwis"></a>
         <div id="navbar">
             #if(${user})
-            <a href="/user/toHomePage">主页</a>
-            | <a href="timeline.php">热点</a>
+                <a href="/user/toHomePage">主页</a>
+                | <a href="/user/toTimelinePage">热点</a>
 
                 | <a href="/user/logout">退出</a>
             #end
         </div>
     </div>
-    <h2 class="username">test</h2>
-    <a href="follow.php?uid=1&f=1" class="button">关注ta</a>
-
-    <div class="post">
-        <a class="username" href="profile.php?u=test">test</a>
-        world<br>
-        <i>11 分钟前 通过 web发布</i>
+    <div id="postform">
+        <h2 class="username">${profileUsername}</h2>
+        #if(!${concerned})
+            <a href="/user/concer?username=${profileUsername}" class="button">关注ta</a>
+        #end
+        <div id="homeinfobox">
+            #if(${fansNum})
+                ${fansNum} 粉丝<br>
+            #elseif(!${fansNum})
+                0 粉丝
+            #end
+            #if(${concernsNum})
+                ${concernsNum} 关注<br>
+            #elseif(!${concernsnum})
+                0 关注<br>
+            #end
+        </div>
     </div>
 
-    <div class="post">
-        <a class="username" href="profile.php?u=test">test</a>
-        hello<br>
-        <i>22 分钟前 通过 web发布</i>
-    </div>
+    #foreach($status in ${statuses})
+        <div class="post">
+            <a class="username" href="/user/toProfilePage?username=${status.username}">${status.username}</a>
+            ${status.content}<br>
+            <i>${status.time} 分钟前 通过 web发布</i>
+        </div>
+    #end
 
     <div id="footer">redis版本的仿微博项目 <a href="http://redis.io">Redis key-value database</a></div>
 </div>

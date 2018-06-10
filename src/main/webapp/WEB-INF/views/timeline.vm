@@ -8,18 +8,22 @@
 <body>
 <div id="page">
     <div id="header">
-        <a href="/"><img style="border:none" src="/logo.png" width="192" height="85" alt="Retwis"></a>
+        <a href="/user/redirectToIndex"><img style="border:none" src="/static/logo.png" width="192" height="85" alt="Retwis"></a>
         <div id="navbar">
             #if(${user})
             <a href="/user/toHomePage">主页</a>
-            | <a href="timeline.php">热点</a>
+            | <a href="/user/toTimelinePage">热点</a>
                 | <a href="/user/logout">退出</a>
             #end
         </div>
     </div>
     <h2>热点</h2>
     <i>最新注册用户(redis中的sort用法)</i><br>
-    <div><a class="username" href="profile.php?u=test">test</a></div>
+    <div>
+        #foreach($user in ${users})
+            <a class="username" href="/user/toProfilePage?username=${user.username}">${user.username}</a>
+        #end
+    </div>
 
     <br><i>最新的50条微博!</i><br>
     <div class="post">

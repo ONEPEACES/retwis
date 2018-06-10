@@ -5,11 +5,11 @@ import com.example.weibo.vo.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 
 @Repository("weiboHandler")
 public class WeiboHandler {
@@ -34,8 +34,8 @@ public class WeiboHandler {
         String userid = redisCache.get("user:username:" + username + ":userid");
         redisCache.set("post:postid:" + postid + ":userid", userid);
 
-        //the list-data-structure to store the statuses will show in page
-        redisCache.rpush("statuses:userid:" + userid + ":postids", String.valueOf(postid));
+        //the list-data-structure to store the statuses will show in page,show the new one
+        redisCache.lpush("statuses:userid:" + userid + ":postids", String.valueOf(postid));
         return "post_succ";
     }
 
@@ -49,19 +49,9 @@ public class WeiboHandler {
         String userid = redisCache.get("user:username:" + username + ":userid");
         List<String> postids = redisCache.lrange("statuses:userid:" + userid + ":postids", 0, -1);
         List<Status> statuses = new ArrayList<>();
-        for (String postid : postids) {
-            Status status = new Status();
-            status.setContent(redisCache.get("post:postid:" + postid + ":content"));
-            Format format = new SimpleDateFormat();
-            String timeStamp = redisCache.get("post:postid:" + postid + ":time");
-            Long tmp = Long.valueOf(timeStamp);
-            Date date = new Date(tmp);
-
-            status.setTime(((SimpleDateFormat) format).format(date));
-            statuses.add(status);
-        }
-
+        postids.forEach(postid -> statuses.add(new Status(redisCache.get("post:postid:" + postid + ":content"),
+                redisCache.get("post:postid:" + postid + ":time"),username)));
+        statuses.forEach(status -> status.setTime(new SimpleDateFormat().format(new Date(Long.valueOf(status.getTime())))));
         return statuses;
-
     }
 }

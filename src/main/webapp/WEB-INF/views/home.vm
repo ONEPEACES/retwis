@@ -8,11 +8,12 @@
 <body>
 <div id="page">
     <div id="header">
-        <a href="/"><img style="border:none" src="/logo.png" width="192" height="85" alt="Retwis"></a>
+        <a href="/user/redirectToIndex"><img style="border:none" src="/static/logo.png" width="192" height="85"
+                                             alt="Retwis"></a>
         <div id="navbar">
             #if(${user})
-            <a href="/user/toHomePage">主页</a>
-            | <a href="timeline.php">热点</a>
+                <a href="/user/toHomePage">主页</a>
+                | <a href="/user/toTimelinePage">热点</a>
                 | <a href="/user/logout">退出</a>
             #end
         </div>
@@ -31,20 +32,27 @@
             </table>
         </form>
         <div id="homeinfobox">
-            0 粉丝<br>
-            0 关注<br>
+            #if(${fansNum})
+                ${fansNum} 粉丝<br>
+            #elseif(!${fansNum})
+                0 粉丝
+            #end
+            #if(${concernsNum})
+                ${concernsNum} 关注<br>
+            #elseif(!${concernsnum})
+                0 关注<br>
+            #end
         </div>
     </div>
 
-        #if(${statuses})
-            #foreach($status in ${statuses})
+    #if(${statuses})
+        #foreach($status in ${statuses})
             <div class="post">
-                <a class="username" href="profile.php?u=test">test</a> ${status.content}<br>
+                <a class="username" href="/user/toProfilePage?username=${status.username}">${status.username}</a> ${status.content}<br>
                 <i>${status.time} 通过 web发布</i>
             </div>
-            #end
         #end
-
+    #end
 
     <div id="footer">redis版本的仿微博项目 <a href="http://redis.io">Redis key-value database</a></div>
 </div>

@@ -2,11 +2,13 @@ package com.example.weibo;
 
 import com.example.common.cache.RedisCache;
 import com.example.weibo.dao.UserHandler;
+import com.example.weibo.vo.User;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -81,6 +83,12 @@ public class Test {
                 }
             }.start();
         }
+    }
+
+    @org.junit.Test
+    public void newUserTest(){
+        Set<User> concerns = userHandler.concerns("1");
+        System.out.println(concerns);
     }
 
     public static void main(String[] args) {
